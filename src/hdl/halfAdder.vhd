@@ -10,12 +10,12 @@
 --| 
 --| ---------------------------------------------------------------------------
 --|
---| FILENAME      : halfAdder_tb.vhd
---| AUTHOR(S)     : Capt Warner
---| CREATED       : 01/17/2017
---| DESCRIPTION   : This file implements a half adder test bench.
+--| FILENAME      : halfAdder.vhd
+--| AUTHOR(S)     : Jonathon Watson
+--| CREATED       : 01/26/2024
+--| DESCRIPTION   : This file implements a one bit half adder.
 --|
---| DOCUMENTATION : Modified slightly by Capt Johnson
+--| DOCUMENTATION : None
 --|
 --+----------------------------------------------------------------------------
 --|
@@ -23,7 +23,7 @@
 --|
 --|    Libraries : ieee
 --|    Packages  : std_logic_1164, numeric_std, unisim
---|    Files     : halfAdder.vhd
+--|    Files     : NONE
 --|
 --+----------------------------------------------------------------------------
 --|
@@ -50,56 +50,27 @@
 library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
-  
-entity halfAdder_tb is
-end halfAdder_tb;
 
-architecture test_bench of halfAdder_tb is 
+-- entity name should match filename  
+entity halfAdder is 
+  port(
+	i_A     : in  std_logic; -- 1-bit input port
+	i_B     : in  std_logic; 
+	o_S     : out std_logic;  -- 1-bit output port
+							 -- (NOTE: NO semicolon on LAST port only!)
+	-- TODO:  Carry port
+	o_Cout  : out std_logic
+  ); -- the semicolon is here instead
+end halfAdder;
 
-	-- Component Declaration	
-  component halfAdder is
-	port(
-		i_A     : in  std_logic; 
-		i_B     : in  std_logic; 
-		o_S     : out std_logic;
-		o_Cout  : out std_logic
-	);	
-  end component;
-
-  
-  signal w_sw1, w_sw0 : std_logic := '0'; 
-  signal w_led1, w_led0 : std_logic := '0';
-    
+architecture halfAdder_arch of halfAdder is 
+	-- this is where you would include components declarations and signals if you needed them
+	  
 begin
-	-- PORT MAPS ----------------------------------------
-	halfAdder_inst : halfAdder port map (
-		i_A     => w_sw1,
-		i_B     => w_sw0,
-		o_S     => w_led0,
-		o_Cout  => w_led1
-	);
-	-----------------------------------------------------
-	
-	-- PROCESSES ----------------------------------------	
-	-- Test plan process
-	-- Testing each combination of i_A and i_B (4 total)
-	test_process : process 
-	begin
-    w_sw1 <= '0'; w_sw0 <= '0'; wait for 10 ns;
-      assert w_led0 = '0' report "bad sum" severity error;
-      assert w_led1 = '0' report "bad carry" severity error;
-    w_sw1 <= '0'; w_sw0 <= '1'; wait for 10 ns;
-      assert w_led0 = '1' report "bad sum" severity error;
-      assert w_led1 = '0' report "bad carry" severity error;
-    w_sw1 <= '1'; w_sw0 <= '0'; wait for 10 ns;
-      assert w_led0 = '1' report "bad sum" severity error;
-      assert w_led1 = '0' report "bad carry" severity error;
-	w_sw1 <= '1'; w_sw0 <= '1';	
-	  assert w_led0 = '1' report "bad sum" severity error;
-	  assert w_led1 = '1' report "bad carry" severity error;
-	wait; -- wait forever
-		
-	end process;	
-	-----------------------------------------------------	
-	
-end test_bench;
+	-- this is where you would map ports for any component instantiations if you needed to
+
+	-- *concurrent* signal assignments
+	o_S    <= i_A xor i_B;
+	-- TODO:  Carry signal assignment
+	o_Cout <= i_A and i_B;
+end halfAdder_arch;
